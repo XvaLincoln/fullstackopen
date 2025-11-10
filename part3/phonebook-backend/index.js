@@ -1,20 +1,16 @@
-const express = require('express');
+const express = require('express'); 
+const morgan = require('morgan');  
+const cors = require('cors'); 
+
+ const app = express();  
+
 app.use(cors());
-const morgan = require('morgan'); 
- 
-const app = express(); 
 app.use(express.json()); 
 
 morgan.token('body',(req) => { 
     return req.method === 'POST' ? JSON.stringify(req.body) : ''; 
 } );
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
-
-   const generateId = () => {
-        return Math.floor(Math.random() * 1000000); 
-    } 
-    const cors= require('cors'); 
-app.use(cors());
 
 const reqLogger = (req, res, next) => {
     console.log('Method:', req.method);
@@ -23,7 +19,11 @@ const reqLogger = (req, res, next) => {
     console.log('---'); 
     next(); 
 } 
-app.use(reqLogger);
+app.use(reqLogger); 
+
+const generateId = () => {
+    return Math.floor(Math.random() * 1000000); 
+}
 let persons = [
     {
         id: 1,
@@ -80,12 +80,12 @@ app.post('/api/persons', (req, res) => {
     const body = req.body;
         if (!body.name || !body.number) {
             return res.status(400).json({ 
-                error: 'name must be unique'
+                error: 'name or number is missing'
             }); 
         } 
  if (persons.find(person => person.name === body.name)) {
             return res.status(400).json({ 
-                error: 'name or number missing'
+                error: 'name must be unique'
             }); 
         }
         const person = {
@@ -104,4 +104,4 @@ app.post('/api/persons', (req, res) => {
 const PORT = process.env.PORT || 3001; 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-} ); 
+}); 
