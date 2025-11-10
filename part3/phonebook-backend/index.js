@@ -13,7 +13,9 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
    const generateId = () => {
         return Math.floor(Math.random() * 1000000); 
-    }
+    } 
+    const cors= require('cors'); 
+app.use(cors()); 
 
 const reqLogger = (req, res, next) => {
     console.log('Method:', req.method);
